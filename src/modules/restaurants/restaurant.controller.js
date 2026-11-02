@@ -1,37 +1,29 @@
-const restaurantService = require("./restaurant.service");
+const service = require("./restaurant.service");
 
-async function list(req, res) {
+exports.list = async (req, res) => {
   try {
-    const restaurants = await restaurantService.listRestaurants();
-    res.json(restaurants);
+    const restaurants = await service.list();
+    return res.json(restaurants);
   } catch (error) {
-    res.status(500).json({
-      error: "Erro interno do servidor",
-    });
+    return res.status(500).json({ error: error.message });
   }
-}
+};
 
-async function create(req, res) {
-  const { name, category, rating } = req.body;
-
-  if (!name || !category) {
-    return res.status(400).json({
-      error: "Nome e categoria são obrigatórios",
-    });
-  }
-
+exports.create = async (req, res) => {
   try {
-    const restaurant = await restaurantService.createRestaurant({
-      name,
-      category,
-      rating,
-    });
-    res.status(201).json(restaurant);
+    const restaurant = await service.create(req.body);
+    return res.status(201).json(restaurant);
   } catch (error) {
-    res.status(500).json({
-      error: "Erro interno do servidor",
-    });
+    return res.status(400).json({ error: error.message });
   }
-}
+};
 
-module.exports = { list, create };
+exports.remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await service.remove(id);
+    return res.status(200).json({ message: "Restaurante removido com sucesso!" });
+  } catch (error) {
+    return res.status(400).json({ error: "Erro ao remover restaurante." });
+  }
+};
