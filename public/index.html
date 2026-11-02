@@ -1,496 +1,58 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prato Cheio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Prato Cheio - EasyFood</title>
   <style>
-    :root { --sol:#FFCF33; --sol-claro:#FFF1B8; --anil:#16307A; --pimenta:#E5383B; --texto:#14204A; --display:"Bowlby One","Arial Black",Impact,sans-serif; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--texto); background: var(--sol); display: flex; justify-content: center; padding: 20px; }
-    .phone { width: 390px; height: 844px; background: #fff; border-radius: 40px; border: 8px solid var(--anil); overflow: hidden; box-shadow: 10px 10px 0 var(--anil); display: flex; flex-direction: column; position: relative; }
-    .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px 8px; font-size: 14px; font-weight: 700; background: var(--sol); color: var(--anil); }
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px 16px; background: var(--sol); border-bottom: 3px solid var(--anil); }
-    .header-logo { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: 22px; color: var(--anil); }
-    .user-info { font-size: 11px; font-weight: 700; background: #fff; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--anil); display: flex; align-items: center; gap: 4px; }
-    .search-bar { margin: 10px 20px 12px; display: flex; align-items: center; background: #fff; border: 2px solid var(--anil); border-radius: 999px; padding: 10px 16px; gap: 10px; box-shadow: 3px 3px 0 var(--anil); }
-    .search-bar input { border: none; outline: none; background: transparent; flex: 1; font: inherit; font-size: 15px; }
-    .categories { display: flex; gap: 10px; padding: 4px 20px 12px; overflow-x: auto; }
-    .categories::-webkit-scrollbar { display: none; }
-    .category-chip { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; border: 2px solid var(--anil); font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; }
-    .category-chip.active { background: var(--anil); color: #fff; }
-    .section-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px 12px; }
-    .section-header h2 { font-family: var(--display); font-size: 19px; color: var(--anil); }
-    .restaurant-list { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 14px; flex: 1; overflow-y: auto; }
-    .restaurant-card { display: flex; align-items: center; padding: 12px; border: 2px solid var(--anil); border-radius: 16px; gap: 14px; background: #fff; box-shadow: 4px 4px 0 var(--anil); cursor: pointer; }
-    .restaurant-img { width: 76px; height: 76px; background: var(--sol-claro); border: 2px solid var(--anil); border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 32px; }
-    .restaurant-img img { width: 100%; height: 100%; object-fit: cover; }
-    .restaurant-info { flex: 1; min-width: 0; }
-    .restaurant-info h3 { font-family: var(--display); font-size: 15px; color: var(--anil); margin-bottom: 4px; }
-    .add-restaurant-section { display: none; padding: 20px; flex: 1; overflow-y: auto; }
-    .add-restaurant-section.active { display: block; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--anil); margin-bottom: 4px; }
-    .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid var(--anil); border-radius: 10px; font: inherit; font-size: 14px; outline: none; }
-    .submit-btn { width: 100%; padding: 12px; background: var(--anil); color: #fff; border: none; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--pimenta); margin-top: 6px; }
-    .submit-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pimenta); }
-    .bottom-nav { display: flex; justify-content: space-around; padding: 10px 0; background: var(--sol); border-top: 3px solid var(--anil); }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; cursor: pointer; }
-    .nav-item.active { color: var(--anil); font-weight: 700; }
-    .toast { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); background: var(--anil); color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 10; white-space: nowrap; }
-    .toast.show { opacity: 1; }
-    #sheet { border: 3px solid var(--anil); border-radius: 20px; padding: 20px; width: min(320px, 90vw); margin: auto; }
-    .dish-card { border: 2px solid var(--anil); border-radius: 12px; padding: 10px; background: #fff; box-shadow: 2px 2px 0 var(--anil); display: flex; gap: 10px; align-items: center; }
-    .dish-img { width: 60px; height: 60px; border-radius: 8px; border: 1px solid var(--anil); object-fit: cover; flex-shrink: 0; background: var(--sol-claro); display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; }
-    .dish-img img { width: 100%; height: 100%; object-fit: cover; }
-    .auth-toggle { display: flex; gap: 10px; margin-bottom: 16px; }
-    .auth-toggle button { flex: 1; padding: 8px; border: 2px solid var(--anil); border-radius: 8px; background: #fff; font-weight: 700; cursor: pointer; }
-    .auth-toggle button.active { background: var(--anil); color: #fff; }
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+    header { display: flex; justify-content: space-between; align-items: center; background: #004085; color: white; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; }
+    header h1 { margin: 0; font-size: 24px; }
+    .user-info { font-size: 14px; }
+    .btn-logout { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-left: 10px; }
+    .form-container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin-bottom: 30px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .form-group input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    button.btn-submit { background-color: #198754; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+    .restaurants-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .restaurant-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .restaurant-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 4px; }
+    .btn-delete { background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
   </style>
 </head>
 <body>
-  <div class="phone">
-    <div class="status-bar"><span id="clock">9:41</span><span>📶 🔋</span></div>
-    
-    <div class="header">
-      <div class="header-logo"><span>🍛</span><span>Prato Cheio</span></div>
-      <div class="user-info" id="user-badge">👤 Entrar</div>
-    </div>
 
-    <div class="search-bar">
-      <span>🔍</span>
-      <input type="text" id="search-input" placeholder="Buscar restaurantes">
-    </div>
+  <header>
+    <h1>Prato Cheio</h1>
+    <div id="user-header" class="user-info"></div>
+  </header>
 
-    <div class="categories" id="categories">
-      <div class="category-chip active" data-category="Todos">🍽️ Todos</div>
-      <div class="category-chip" data-category="Burger">🍔 Burger</div>
-      <div class="category-chip" data-category="Pizza">🍕 Pizza</div>
-      <div class="category-chip" data-category="Sushi">🍣 Sushi</div>
-      <div class="category-chip" data-category="Massa">🍝 Massa</div>
-      <div class="category-chip" data-category="Sobremesas">🍰 Doces</div>
-      <div class="category-chip" data-category="Cafetaria">☕ Cafetaria</div>
-      <div class="category-chip" data-category="Bebidas">🍹 Bebidas</div>
-    </div>
-
-    <div class="section-header"><h2>Restaurantes</h2></div>
-
-    <div class="restaurant-list" id="restaurant-list"></div>
-
-    <!-- Login / Registro -->
-    <div class="add-restaurant-section" id="auth-section">
-      <div class="auth-toggle">
-        <button type="button" id="toggle-login-btn" class="active" onclick="showAuthMode('login')">Login</button>
-        <button type="button" id="toggle-register-btn" onclick="showAuthMode('register')">Cadastrar</button>
+  <div class="form-container">
+    <h2>Novo Restaurante</h2>
+    <form id="restaurant-form">
+      <div class="form-group">
+        <label for="name">Nome*</label>
+        <input type="text" id="name" required placeholder="Ex: Mourisco Pizzeria">
       </div>
-
-      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-        <div class="form-group" id="name-group" style="display: none;">
-          <label>Nome</label>
-          <input type="text" id="auth-name" placeholder="Seu nome">
-        </div>
-        <div class="form-group">
-          <label>E-mail</label>
-          <input type="email" id="auth-email" placeholder="seu@email.com" required>
-        </div>
-        <div class="form-group">
-          <label>Senha</label>
-          <input type="password" id="auth-password" placeholder="******" required>
-        </div>
-        <button type="submit" class="submit-btn" id="auth-submit-btn">Entrar</button>
-      </form>
-      
-      <button type="button" id="logout-btn" onclick="logout()" class="submit-btn" style="background: var(--pimenta); margin-top: 16px; display: none;">Sair da conta</button>
-    </div>
-
-    <!-- Cadastrar Restaurante -->
-    <div class="add-restaurant-section" id="add-restaurant-section">
-      <h2>➕ Cadastrar Restaurante</h2>
-      <form id="add-restaurant-form">
-        <div class="form-group">
-          <label for="restaurant-name">Nome do Restaurante</label>
-          <input type="text" id="restaurant-name" placeholder="Ex: Café Central" required>
-        </div>
-        <div class="form-group">
-          <label for="restaurant-category">Categoria</label>
-          <select id="restaurant-category" required>
-            <option value="" disabled selected>Selecione uma categoria</option>
-            <option value="Burger">🍔 Burger</option>
-            <option value="Pizza">🍕 Pizza</option>
-            <option value="Massa">🍝 Massa / Italiana</option>
-            <option value="Sushi">🍣 Sushi</option>
-            <option value="Brasileira">🇧🇷 Brasileira</option>
-            <option value="Mexicana">🌮 Mexicana</option>
-            <option value="Sobremesas">🍰 Sobremesas & Doces</option>
-            <option value="Cafetaria">☕ Cafetaria</option>
-            <option value="Bebidas">🍹 Bebidas & Bar</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="restaurant-rating">Avaliação (0 a 5)</label>
-          <input type="number" id="restaurant-rating" placeholder="Ex: 4.8" min="0" max="5" step="0.1" required>
-        </div>
-        <div class="form-group">
-          <label for="restaurant-image">URL da Foto do Restaurante (opcional)</label>
-          <input type="url" id="restaurant-image" placeholder="https://exemplo.com/foto.jpg">
-        </div>
-        <button type="submit" class="submit-btn">Cadastrar Restaurante</button>
-      </form>
-    </div>
-
-    <!-- Ementa / Pratos -->
-    <div class="add-restaurant-section" id="dishes-section">
-      <h2 id="selected-restaurant-title">🍽️ Ementa</h2>
-      <div id="dishes-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;"></div>
-
-      <hr style="margin: 16px 0; border: 1px dashed var(--anil);">
-
-      <h3 style="font-family: var(--display); font-size: 16px; color: var(--anil); margin-bottom: 10px;">+ Cadastrar Prato</h3>
-      <form id="dish-form" onsubmit="handleCreateDish(event)">
-        <div class="form-group">
-          <label for="dish-name">Nome do Prato</label>
-          <input type="text" id="dish-name" placeholder="Ex: Capuccino com Canela" required />
-        </div>
-        <div class="form-group">
-          <label for="dish-price">Preço (R$)</label>
-          <input type="number" step="0.01" id="dish-price" placeholder="Ex: 12.00" required />
-        </div>
-        <div class="form-group">
-          <label for="dish-description">Descrição</label>
-          <input type="text" id="dish-description" placeholder="Ex: Café expresso, leite vaporizado" />
-        </div>
-        <div class="form-group">
-          <label for="dish-image">URL da Foto do Prato (opcional)</label>
-          <input type="url" id="dish-image" placeholder="https://exemplo.com/prato.jpg" />
-        </div>
-        <button type="submit" class="submit-btn">Guardar Prato</button>
-      </form>
-    </div>
-
-    <div class="toast" id="toast"></div>
-
-    <div class="bottom-nav">
-      <div class="nav-item active" data-view="home"><span>🏠</span><span>Início</span></div>
-      <div class="nav-item" data-view="add"><span>➕</span><span>Cadastrar</span></div>
-      <div class="nav-item" data-view="auth"><span>👤</span><span>Conta</span></div>
-    </div>
+      <div class="form-group">
+        <label for="category">Categoria*</label>
+        <input type="text" id="category" required placeholder="Ex: Pizza">
+      </div>
+      <div class="form-group">
+        <label for="imageUrl">URL da Imagem</label>
+        <input type="url" id="imageUrl" placeholder="https://...">
+      </div>
+      <button type="submit" class="btn-submit">Guardar Restaurante</button>
+    </form>
   </div>
 
-  <dialog id="sheet">
-    <div style="text-align:center;">
-      <h2 id="sheet-nome" style="font-family: var(--display); color: var(--anil); font-size: 20px; margin-bottom: 8px;"></h2>
-      <button type="button" id="sheet-ementa" style="margin-top:10px; width: 100%; padding:10px 20px; border-radius:999px; border:2px solid var(--anil); background:var(--sol); font-weight:700; cursor:pointer;">🍽️ Ver Ementa</button>
-      <button type="button" onclick="document.getElementById('sheet').close()" style="margin-top:8px; width: 100%; padding:8px 16px; border-radius:999px; border:2px solid var(--anil); background:#fff; font-weight:700; cursor:pointer;">Fechar</button>
-    </div>
-  </dialog>
+  <h2>Restaurantes Disponíveis</h2>
+  <div id="restaurants-list" class="restaurants-grid">
+    <p>A carregar restaurantes...</p>
+  </div>
 
-  <script>
-    const API_URL = "http://localhost:3000";
-    let allRestaurants = [];
-    let currentRestaurantId = null;
-    let sheetRestaurant = null;
-    let selectedCategory = "Todos";
-    let searchQuery = "";
-    let authMode = "login";
-
-    const categoryEmoji = { "Burger":"🍔", "Pizza":"🍕", "Massa":"🍝", "Sushi":"🍣", "Brasileira":"🇧🇷", "Mexicana":"🌮", "Sobremesas":"🍰", "Cafetaria":"☕", "Bebidas":"🍹" };
-
-    const $ = (id) => document.getElementById(id);
-    const emojiOf = (cat) => categoryEmoji[cat] || "🏪";
-    const getToken = () => localStorage.getItem("token");
-
-    function toast(msg) {
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), 2500);
-    }
-
-    function updateClock() {
-      $("clock").textContent = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-    }
-
-    async function checkAuth() {
-      const token = getToken();
-      if (!token) {
-        $("user-badge").textContent = "👤 Entrar";
-        $("logout-btn").style.display = "none";
-        return;
-      }
-      try {
-        const res = await fetch(`${API_URL}/auth/me`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const user = await res.json();
-          $("user-badge").textContent = `👤 ${user.name || user.email.split('@')[0]}`;
-          $("logout-btn").style.display = "block";
-        } else {
-          logout();
-        }
-      } catch (err) {
-        logout();
-      }
-    }
-
-    function showAuthMode(mode) {
-      authMode = mode;
-      $("name-group").style.display = mode === "register" ? "block" : "none";
-      $("auth-submit-btn").textContent = mode === "register" ? "Cadastrar" : "Entrar";
-      $("toggle-login-btn").classList.toggle("active", mode === "login");
-      $("toggle-register-btn").classList.toggle("active", mode === "register");
-    }
-
-    async function handleAuthSubmit(e) {
-      e.preventDefault();
-      const email = $("auth-email").value;
-      const password = $("auth-password").value;
-      const name = $("auth-name").value;
-
-      const endpoint = authMode === "register" ? "/auth/register" : "/auth/login";
-      const body = authMode === "register" ? { name, email, password } : { email, password };
-
-      try {
-        const res = await fetch(`${API_URL}${endpoint}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          if (authMode === "register") {
-            toast("Conta criada! Faça login.");
-            showAuthMode("login");
-          } else {
-            localStorage.setItem("token", data.token);
-            toast("Login realizado!");
-            checkAuth();
-            switchView("home");
-          }
-        } else {
-          toast(data.error || "Erro na autenticação.");
-        }
-      } catch (err) {
-        toast("Erro ao conectar com o servidor.");
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("token");
-      $("user-badge").textContent = "👤 Entrar";
-      $("logout-btn").style.display = "none";
-      toast("Sessão encerrada.");
-    }
-
-    async function fetchRestaurants() {
-      try {
-        const res = await fetch(`${API_URL}/restaurants`);
-        if (!res.ok) throw new Error();
-        allRestaurants = await res.json();
-        renderRestaurants();
-      } catch (err) {
-        $("restaurant-list").innerHTML = '<p style="text-align:center; padding:20px; color: var(--pimenta); font-weight: bold;">Erro ao carregar restaurantes.</p>';
-      }
-    }
-
-    function renderRestaurants() {
-      const container = $("restaurant-list");
-      const filtered = allRestaurants.filter(r => {
-        const matchCat = selectedCategory === "Todos" || r.category === selectedCategory;
-        const matchSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchCat && matchSearch;
-      });
-
-      if (!filtered.length) {
-        container.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">Nenhum restaurante encontrado.</p>';
-        return;
-      }
-
-      container.innerHTML = filtered.map(r => `
-        <div class="restaurant-card" onclick="openSheet(${r.id})">
-          <div class="restaurant-img">
-            ${r.imageUrl 
-              ? `<img src="${r.imageUrl}" alt="${r.name}" onerror="this.onerror=null; this.parentElement.innerText='${emojiOf(r.category)}';">` 
-              : emojiOf(r.category)}
-          </div>
-          <div class="restaurant-info">
-            <h3>${r.name}</h3>
-            <p style="font-size:12px; font-weight:600; color:#555;">${r.category || 'Sem categoria'} • ★ ${r.rating != null ? Number(r.rating).toFixed(1) : '0.0'}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openSheet(id) {
-      sheetRestaurant = allRestaurants.find(r => r.id === id);
-      if (!sheetRestaurant) return;
-      $("sheet-nome").textContent = sheetRestaurant.name;
-      $("sheet").showModal();
-    }
-
-    $("sheet-ementa").addEventListener("click", () => {
-      if (sheetRestaurant) showDishes(sheetRestaurant.id, sheetRestaurant.name);
-    });
-
-    function switchView(view) {
-      const isList = view === "home";
-      document.querySelector(".search-bar").style.display = isList ? "flex" : "none";
-      document.querySelector(".categories").style.display = isList ? "flex" : "none";
-      document.querySelector(".section-header").style.display = isList ? "flex" : "none";
-      
-      $("restaurant-list").style.display = isList ? "flex" : "none";
-      $("add-restaurant-section").classList.toggle("active", view === "add");
-      $("auth-section").classList.toggle("active", view === "auth");
-      $("dishes-section").classList.toggle("active", view === "dishes");
-
-      document.querySelectorAll(".nav-item").forEach((item, index) => {
-        item.classList.toggle("active", 
-          (view === "home" && index === 0) || 
-          (view === "add" && index === 1) || 
-          (view === "auth" && index === 2)
-        );
-      });
-    }
-
-    async function showDishes(restaurantId, restaurantName) {
-      currentRestaurantId = restaurantId;
-      $("selected-restaurant-title").textContent = "🍽️ Ementa: " + restaurantName;
-      switchView("dishes");
-      $("sheet").close();
-
-      const container = $("dishes-list");
-      container.innerHTML = '<p style="text-align:center; padding:10px;">Carregando ementa...</p>';
-
-      try {
-        const res = await fetch(`${API_URL}/restaurants/${restaurantId}/dishes`);
-        const dishes = await res.json();
-
-        if (!dishes.length) {
-          container.innerHTML = '<p style="text-align:center; color:#666; padding:10px;">Nenhum prato cadastrado.</p>';
-          return;
-        }
-
-        container.innerHTML = dishes.map(d => `
-          <div class="dish-card">
-            <div class="dish-img">
-              ${d.imageUrl 
-                ? `<img src="${d.imageUrl}" alt="${d.name}" onerror="this.onerror=null; this.parentElement.innerText='🍲';">` 
-                : '🍲'}
-            </div>
-            <div style="flex:1;">
-              <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--anil);">
-                <span>${d.name}</span>
-                <span>R$ ${Number(d.price).toFixed(2).replace(".", ",")}</span>
-              </div>
-              <p style="font-size:12px; color:#555; margin-top:2px;">${d.description || "Sem descrição"}</p>
-            </div>
-          </div>
-        `).join('');
-      } catch (err) {
-        container.innerHTML = '<p style="color:var(--pimenta); text-align:center;">Erro ao carregar pratos.</p>';
-      }
-    }
-
-    async function handleCreateDish(event) {
-      event.preventDefault();
-      const token = getToken();
-      if (!token) return toast("Faça login para cadastrar um prato.");
-
-      const name = $("dish-name").value;
-      const price = parseFloat($("dish-price").value);
-      const description = $("dish-description").value;
-      const imageUrl = $("dish-image").value;
-
-      try {
-        const res = await fetch(`${API_URL}/restaurants/${currentRestaurantId}/dishes`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ name, price, description, imageUrl })
-        });
-
-        if (res.ok) {
-          toast("Prato cadastrado!");
-          $("dish-form").reset();
-          showDishes(currentRestaurantId, $("selected-restaurant-title").textContent.replace("🍽️ Ementa: ", ""));
-        } else {
-          const err = await res.json();
-          toast(err.error || "Erro ao cadastrar prato.");
-        }
-      } catch (err) {
-        toast("Erro de conexão.");
-      }
-    }
-
-    document.querySelectorAll(".nav-item").forEach((item, index) => {
-      item.addEventListener("click", () => switchView(index === 0 ? "home" : index === 1 ? "add" : "auth"));
-    });
-
-    $("user-badge").addEventListener("click", () => switchView("auth"));
-
-    document.querySelectorAll(".category-chip").forEach(chip => {
-      chip.addEventListener("click", () => {
-        document.querySelectorAll(".category-chip").forEach(c => c.classList.remove("active"));
-        chip.classList.add("active");
-        selectedCategory = chip.dataset.category;
-        renderRestaurants();
-      });
-    });
-
-    $("search-input").addEventListener("input", (e) => {
-      searchQuery = e.target.value;
-      renderRestaurants();
-    });
-
-    $("add-restaurant-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const token = getToken();
-      if (!token) {
-        toast("Faça login para cadastrar um restaurante.");
-        switchView("auth");
-        return;
-      }
-
-      const name = $("restaurant-name").value;
-      const category = $("restaurant-category").value;
-      const rating = parseFloat($("restaurant-rating").value);
-      const imageUrl = $("restaurant-image").value;
-
-      try {
-        const res = await fetch(`${API_URL}/restaurants`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ name, category, rating, imageUrl })
-        });
-
-        if (res.ok) {
-          toast("Restaurante cadastrado!");
-          $("add-restaurant-form").reset();
-          await fetchRestaurants();
-          switchView("home");
-        } else {
-          const err = await res.json();
-          toast(err.error || "Erro ao cadastrar restaurante.");
-        }
-      } catch (err) {
-        toast("Erro de conexão com o servidor.");
-      }
-    });
-
-    updateClock();
-    setInterval(updateClock, 60000);
-    checkAuth();
-    fetchRestaurants();
-  </script>
+  <!-- Ficheiro JavaScript externo -->
+  <script src="app.js"></script>
 </body>
 </html>

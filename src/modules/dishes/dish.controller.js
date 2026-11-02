@@ -1,22 +1,42 @@
-const service = require("./dish.service");
+﻿const dishService = require('./dish.service');
 
-exports.create = async (req, res) => {
+async function create(req, res) {
   try {
     const { restaurantId } = req.params;
-    const dish = await service.create(restaurantId, req.body);
+    const dish = await dishService.createDish(Number(restaurantId), req.body);
     return res.status(201).json(dish);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
+}
 
-exports.listByRestaurant = async (req, res) => {
+async function listByRestaurant(req, res) {
   try {
     const { restaurantId } = req.params;
-    const dishes = await service.listByRestaurant(restaurantId);
+    const dishes = await dishService.getDishesByRestaurant(Number(restaurantId));
     return res.json(dishes);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
-};
+}
 
+async function uploadImage(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhuma imagem enviada ou formato inválido.' });
+    }
+
+    const { id } = req.params;
+    const updatedDish = await dishService.processAndSaveImage(Number(id), req.file.buffer);
+
+    return res.status(200).json(updatedDish);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+}
+
+module.exports = {
+  create,
+  listByRestaurant,
+  uploadImage
+};
