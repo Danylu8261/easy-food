@@ -122,81 +122,29 @@ async function carregarPratos(restaurantId) {
   }
 }
 
-async function guardarRestaurante(event) {
-  event.preventDefault();
+https://prenotami.esteri.it/Services
 
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Precisa de estar autenticado para cadastrar um restaurante.');
-    return;
-  }
+Entrar na janela anônima do google 
+Login : sousaferrara@hotmail.com
+Senha email : Mari2008$
+Login: sousaferrara@hotmail.com
+Senha:Passaporte2026$
 
-  const nameInput = document.getElementById('name');
-  const categoryInput = document.getElementById('category');
-  const imageUrlInput = document.getElementById('imageUrl');
 
-  const payload = {
-    name: nameInput ? nameInput.value : '',
-    category: categoryInput ? categoryInput.value : '',
-    imageUrl: imageUrlInput ? imageUrlInput.value : ''
-  };
+fbarretoferrara@gmail.com
+Senha: Fe593200*
 
-  try {
-    const response = await fetch('/restaurants', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
+Documentos não pode passar de 1 Mega 
+Agendamento Passaporte 
 
-    const data = await response.json();
+Mariane Sousa ferrara 
+Altura 153 
+Olhos castanhos 
+Endereço Rua Ernesto Sena, n 282 casa Cep: 05525030 Jardim Jussara -SP 
 
-    if (response.ok) {
-      alert('Restaurante cadastrado com sucesso!');
-      if (event.target) event.target.reset();
-      carregarRestaurantes();
-    } else {
-      alert(data.message || data.error || 'Erro ao cadastrar restaurante.');
-    }
-  } catch (error) {
-    console.error('Erro na submissão:', error);
-    alert('Não foi possível conectar ao servidor.');
-  }
-}
+Fernando Barreto Ferrara 
+Altura :175
+Olhos castanhos 
+(Pai )
 
-async function deletarRestaurante(id) {
-  const confirmacao = confirm(
-    'Tem a certeza que deseja excluir este restaurante?'
-  );
-  if (!confirmacao) return;
-
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Precisa de estar autenticado para eliminar um restaurante.');
-    return;
-  }
-
-  try {
-    const response = await fetch(`/restaurants/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert('Restaurante excluído com sucesso!');
-      carregarRestaurantes();
-    } else {
-      alert(data.message || data.error || 'Erro ao apagar o restaurante.');
-    }
-  } catch (error) {
-    console.error('Erro ao excluir restaurante:', error);
-    alert('Não foi possível conectar ao servidor.');
-  }
-}
+Passaporte2026$

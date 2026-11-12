@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+﻿const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../../database/prisma");
 
@@ -19,7 +19,7 @@ async function registerUser({ name, email, password }) {
     data: { name, email, password: passwordHash },
   });
 
-  return { id: user.id, name: user.name, email: user.email };
+  return { id: user.id, name: user.name, email: user.email, imageUrl: user.imageUrl };
 }
 
 async function loginUser({ email, password }) {
@@ -47,8 +47,31 @@ async function loginUser({ email, password }) {
       id: user.id,
       name: user.name,
       email: user.email,
+      imageUrl: user.imageUrl,
     },
   };
 }
 
-module.exports = { registerUser, loginUser };
+async function getUserById(userId) {
+  return await prisma.user.findUnique({
+    where: { id: Number(userId) },
+    select: { id: true, name: true, email: true, imageUrl: true, createdAt: true },
+  });
+}
+
+async function updateUserImage(userId, imageUrl) {
+  const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+  if (!user) {
+    const error = new Error("Usuário não encontrado");
+    error.status = 404;
+    throw error;
+  }
+
+  return await prisma.user.update({
+    where: { id: Number(userId) },
+    data: { imageUrl },
+    select: { id: true, name: true, email: true, imageUrl: true, createdAt: true },
+  });
+}
+
+module.exports = { registerUser, loginUser, getUserById, updateUserImage };

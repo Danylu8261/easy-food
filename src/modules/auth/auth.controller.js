@@ -1,4 +1,5 @@
-const authService = require("./auth.service");
+﻿const authService = require("./auth.service");
+const imageService = require("../../shared/image.service");
 
 async function register(req, res) {
   const { name, email, password } = req.body;
@@ -38,4 +39,37 @@ async function login(req, res) {
   }
 }
 
-module.exports = { register, login };
+async function me(req, res) {
+  try {
+    const userId = req.user.id || req.user.sub;
+    const user = await authService.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(error.status || 500).json({ error: error.message });
+  }
+}
+
+async function uploadProfileImage(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Nenhuma imagem enviada ou formato inválido." });
+    }
+
+    const userId = req.user.id || req.user.sub;
+    const imageUrl = await imageService.processAndSaveImage(
+      req.file.buffer,
+      "users",
+      `user-${userId}`
+    );
+
+    const updatedUser = await authService.updateUserImage(userId, imageUrl);
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    return res.status(error.status || 400).json({ error: error.message });
+  }
+}
+
+module.exports = { register, login, me, uploadProfileImage };

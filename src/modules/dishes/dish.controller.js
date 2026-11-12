@@ -6,7 +6,7 @@ async function create(req, res) {
     const dish = await dishService.createDish(Number(restaurantId), req.body);
     return res.status(201).json(dish);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
 
@@ -16,7 +16,7 @@ async function listByRestaurant(req, res) {
     const dishes = await dishService.getDishesByRestaurant(Number(restaurantId));
     return res.json(dishes);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
 
@@ -31,7 +31,7 @@ async function uploadImage(req, res) {
 
     return res.status(200).json(updatedDish);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return res.status(error.status || 400).json({ error: error.message });
   }
 }
 

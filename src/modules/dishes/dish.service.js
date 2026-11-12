@@ -1,10 +1,17 @@
-﻿const sharp = require('sharp');
-const path = require('path');
-const fs = require('fs');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+﻿const prisma = require('../../database/prisma');
+const imageService = require('../../shared/image.service');
 
 async function createDish(restaurantId, data) {
+  const restaurant = await prisma.restaurant.findUnique({
+    where: { id: Number(restaurantId) }
+  });
+
+  if (!restaurant) {
+    const error = new Error('Restaurante não encontrado.');
+    error.status = 404;
+    throw error;
+  }
+
   return await prisma.dish.create({
     data: {
       name: data.name,
@@ -27,23 +34,16 @@ async function processAndSaveImage(dishId, fileBuffer) {
   });
 
   if (!dish) {
-    throw new Error('Prato não encontrado.');
+    const error = new Error('Prato não encontrado.');
+    error.status = 404;
+    throw error;
   }
 
-  const uploadsDir = path.join(__dirname, '../../../uploads/dishes');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-
-  const fileName = `dish-${dishId}-${Date.now()}.webp`;
-  const filePath = path.join(uploadsDir, fileName);
-
-  await sharp(fileBuffer)
-    .resize({ width: 800, fit: 'inside', withoutEnlargement: true })
-    .webp({ quality: 80 })
-    .toFile(filePath);
-
-  const imageUrl = `/uploads/dishes/${fileName}`;
+  const imageUrl = await imageService.processAndSaveImage(
+    fileBuffer,
+    'dishes',
+    `dish-${dishId}`
+  );
 
   return await prisma.dish.update({
     where: { id: Number(dishId) },

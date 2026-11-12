@@ -1,4 +1,4 @@
-﻿const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
@@ -7,7 +7,7 @@ async function main() {
     update: {},
     create: {
       name: "Restaurante Teste",
-      description: "Descrição de teste",
+      
       category: "Italiana"
     }
   });
@@ -17,7 +17,7 @@ async function main() {
     update: {},
     create: {
       name: "Pizza Margherita",
-      description: "Molho de tomate, mozarela e manjericão",
+      description: "Molho de tomate, mozarela e manjeric�o",
       price: 12.50,
       restaurantId: restaurant.id
     }

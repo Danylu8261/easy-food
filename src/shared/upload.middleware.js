@@ -3,17 +3,18 @@
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
+  const allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Formato de imagem não permitido.'), false);
+    cb(new Error('Formato inválido. Envie apenas JPEG, PNG ou WebP.'), false);
   }
 };
 
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter
+  fileFilter,
 });
 
 module.exports = upload;
